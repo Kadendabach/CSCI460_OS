@@ -1,0 +1,39 @@
+Input 1:
+Nothing at time 0
+Time 4: T1⋅[1, 1, 1, 1]⋅T1
+Time 13: T2⋅NNNNNNNNNN⋅T2
+Time 17: T3⋅[3, 3, 3, 3]⋅T3
+
+Input 2:
+Time 9: T2⋅NNNNNNNNNN⋅T2
+Time 19: T2⋅NNNNNNNNNN⋅T2
+Time 23: T3⋅[3, 3, 3, 3]⋅T3
+
+Input 3:
+Time 11: T2⋅NNNNNNNNNN⋅T2
+Time 13: T3⋅[3, 3, 3, 3]⋅T3
+Time 16: T1⋅[1, 1, 1, 1]⋅T1
+
+Input 4:
+Time 11: T2⋅NNNNNNNNNN⋅T2
+Time 13: T3⋅[3, 3, 3, 3]⋅T3
+Time 16: T1⋅[1, 1, 1, 1]⋅T1
+Time 19: T3⋅[3, 3, 3, 3]⋅T3
+Time 22: T3⋅[3, 3, 3, 3]⋅T3
+
+Input 5:
+Time 11: T2⋅NNNNNNNNNN⋅T2
+Time 21: T2⋅NNNNNNNNNN⋅T2
+Time 23: T3⋅[3, 3, 3, 3]⋅T3
+Time 26: T1⋅[1, 1, 1, 1]⋅T1
+Time 29: T3⋅[3, 3, 3, 3]⋅T3
+
+Input 6:
+Time 1: T2⋅N
+Time 4: T1⋅[1, 1, 1, 1]⋅T1
+Time 7: T1⋅[1, 1, 1, 1]⋅T1
+Time 10: T1⋅[1, 1, 1, 1]⋅T1
+Time 18: NNNNNNNNN⋅T2
+Time 28: T2⋅NNNNNNNNNN⋅T2
+Time 32: T3⋅[3, 3, 3, 3]⋅T3
+

@@ -10,6 +10,10 @@
 #The only major problem with this implementation is how I print the output of q2, the end format seems
 #to be correct but the actual code seems a little sloppy.
 
+#This specific implementation compared to the PriorityInversion file features a seperation of processing
+#queues, and when the PriorityInheretence variable is triggered inside of q1, instead of processing q1,
+#it processes q3 assuming q3 is the only other process that the queue can be occupied by.
+
 def main():
     #initializing queues, buffer, and out file
     q1 = Queue()
@@ -17,7 +21,7 @@ def main():
     q3 = Queue()
     b = Buffer()
 
-    f = open("out1.txt", "w", encoding='utf-8')
+    f = open("out2.txt", "w", encoding='utf-8')
 
     #processes tasks for each stream of inputs
     for i in range(6):
@@ -33,64 +37,88 @@ def processTask(q1, q2, q3, b, currentTime, f):
     #processing task
     while not (q1.isEmpty() and q2.isEmpty() and q3.isEmpty()):
         #while there are still tasks in any queue:
-        if (not q1.isEmpty()) and (q1.queue[0].incomeTime <= currentTime) and (b.isAvail or b.state == [1, 1, 1, 1]):
-            #if the queue has at least one task 
-            #and that task's income time is at or less than the current time
-            #and buffer is available or occupied by t1:
-            if b.isAvail:
-                #occupy buffer if not already
-                b.occupy(q1.queue[0])
-                #print('q1 has occupied the buffer')
-            else:
-                pass
-                #print('buffer is already occupied by t1')
-            
+        if (not q1.isEmpty()) and (q1.queue[0].incomeTime <= currentTime):
+            #if q1 has a process to run
+            currentTime, PI = processq1(q1, q2, q3, b, currentTime, f)
 
-            if len(q2.twoString) != 0:
-                #this if statement asks if q1 preempted q2
-                print(q2.pts(currentTime), file=f)
-
-            q1.process(currentTime)
-            ps = b.process(currentTime)
-            if ps is not None:
-                print(ps, file=f)
-            #print('processed q1 & b @ time ', currentTime)
-        
-            currentTime += 1
-            #pause = input()
+            #if the priority inversion variable (PI) is true,
+            #process q3 instead without incrementing currentTime
+            #I didnt see limitations on whether we can assume its p3 or not so thats what were doing.
+            if PI:
+                 currentTime = processq3(q1, q2, q3, b, currentTime, f)
 
         elif not q2.isEmpty() and q2.queue[0].incomeTime <= currentTime:
-            #if the queue has at least one task 
-            #and that task's income time is at or less than the current time:
-            ps = q2.process(currentTime)
-            if ps is not None:
-                print(ps, file=f)
-            #print('processing q2 @ time ', currentTime)
-            currentTime += 1
+            currentTime = processq2(q1, q2, q3, b, currentTime, f)
 
-        elif (not q3.isEmpty()) and (q3.queue[0].incomeTime <= currentTime) and (b.isAvail or b.state == [3, 3, 3, 3]):
-            #if the queue has at least one task 
-            #and that task's income time is at or less than the current time
-            #and buffer is available or occupied by t3:
-            if b.isAvail:
-                #occupy the buffer if not already
-                b.occupy(q3.queue[0])
-                #print('q3 has occupied the buffer')
-            else:
-                pass
-                #print('buffer is already occupied by t3')
-            q3.process(currentTime)
-            ps = b.process(currentTime)
-            if ps is not None:
-                print(ps, file=f)
-            #print('processed q3 & b @ time ', currentTime)
-        
-                
-            currentTime += 1
-            #pause = input()
+        elif (not q3.isEmpty()) and (q3.queue[0].incomeTime <= currentTime):
+            #if q3 has a process to run
+            currentTime = processq3(q1, q2, q3, b, currentTime, f)
+
         else:
             print('Nothing at time', currentTime, file=f)
             currentTime += 1
+    
+def processq1(q1, q2, q3, b, currentTime, f):
+    if b.isAvail or b.state == [1, 1, 1, 1]:
+        #if buffer is avail or occupied by t1
+        if b.isAvail:
+            #occupy buffer if not already
+            b.occupy(q1.queue[0])
+            #print('q1 has occupied the buffer')
+        else:
+            pass
+            #print('buffer is already occupied by t1')
+            
+
+        if len(q2.twoString) != 0:
+            #this if statement asks if q1 preempted q2
+            print(q2.pts(currentTime), file=f)
+
+        q1.process(currentTime)
+        ps = b.process(currentTime)
+        if ps is not None:
+            print(ps, file=f)
+        #print('processed q1 & b @ time ', currentTime)
+            
+        currentTime += 1
+        #pause = input()
+        PI = False
+        return currentTime, PI
+    else:
+        #if buffer is not avail, return PI = True
+        PI = True
+        return currentTime, PI
+
+def processq2(q1, q2, q3, b, currentTime, f):
+    #if the queue has at least one task 
+    #and that task's income time is at or less than the current time:
+    ps = q2.process(currentTime)
+    if ps is not None:
+        print(ps, file=f)
+        #print('processing q2 @ time ', currentTime)
+    currentTime += 1
+    return currentTime
+
+def processq3(q1, q2, q3, b, currentTime, f):
+    if b.isAvail or b.state == [3, 3, 3, 3]:
+        #if buffer is available or occupied by t3:
+        if b.isAvail:
+            #occupy the buffer if not already
+            b.occupy(q3.queue[0])
+            #print('q3 has occupied the buffer')
+        else:
+            pass
+            #print('buffer is already occupied by t3')
+        q3.process(currentTime)
+        ps = b.process(currentTime)
+        if ps is not None:
+            print(ps, file=f)
+        #print('processed q3 & b @ time ', currentTime)
+        
+                
+        currentTime += 1
+        #pause = input()
+        return currentTime
 
 
 
